@@ -77,4 +77,16 @@ public class ReservationSystem {
         System.out.println("Booking Successful!");
         System.out.println(reservation);
     }
+
+    //Cancel Reservation
+    public void cancelReservation(int reservationId) {
+        for (Reservation reservation : reservations) {
+            if (reservation.getReservationId() == reservationId) {
+                reservations.remove(reservation);
+                System.out.println("Reservation Cancelled!");
+                return;
+            }
+        }
+        System.out.println("Reservation not found!");
+    }
 }

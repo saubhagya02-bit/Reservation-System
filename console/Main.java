@@ -18,6 +18,7 @@ public class Main {
             System.out.println("1. Register User");
             System.out.println("2. View Rooms");
             System.out.println("3. Book Room");
+            System.out.println("4. Cancel Reservation");
 
             choice = scanner.nextInt();
             scanner.nextLine();
@@ -47,6 +48,12 @@ public class Main {
                     String slot = scanner.nextLine();
 
                     system.bookRoom(uid, rid, date, slot);
+                    break;
+
+                case 4:
+                    System.out.println("Reservation ID: ");
+                    int resId = scanner.nextInt();
+                    system.cancelReservation(resId);
                     break;
             }
         } while (choice != 0);
