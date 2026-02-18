@@ -17,6 +17,7 @@ public class Main {
             System.out.println("-----Reservation System-----");
             System.out.println("1. Register User");
             System.out.println("2. View Rooms");
+            System.out.println("3. Book Room");
 
             choice = scanner.nextInt();
             scanner.nextLine();
@@ -32,6 +33,20 @@ public class Main {
 
                 case 2:
                     system.viewRooms();
+                    break;
+
+                case 3:
+                    System.out.println("User ID: ");
+                    int uid = scanner.nextInt();
+                    System.out.println("Room ID: ");
+                    int rid = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.println("Date (YYYY-MM-DD): ");
+                    String date = scanner.nextLine();
+                    System.out.println("Time Slot: ");
+                    String slot = scanner.nextLine();
+
+                    system.bookRoom(uid, rid, date, slot);
                     break;
             }
         } while (choice != 0);
