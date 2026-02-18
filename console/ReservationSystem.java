@@ -89,4 +89,13 @@ public class ReservationSystem {
         }
         System.out.println("Reservation not found!");
     }
+
+    //View User Reservation
+    public void viewUserReservation(int useId) {
+        for (Reservation reservation : reservations) {
+            if (reservation.getUser().getId() == useId) {
+                System.out.println(reservation);
+            }
+        }
+    }
 }
