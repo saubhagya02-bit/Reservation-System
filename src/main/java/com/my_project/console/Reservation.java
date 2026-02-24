@@ -1,4 +1,4 @@
-package console;
+package com.my_project.console;
 
 public class Reservation {
     private int reservationId;

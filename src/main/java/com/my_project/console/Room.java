@@ -1,4 +1,4 @@
-package console;
+package com.my_project.console;
 
 public class Room {
     private int roomId;

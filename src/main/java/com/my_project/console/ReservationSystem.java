@@ -1,4 +1,4 @@
-package console;
+package com.my_project.console;
 
 import java.util.ArrayList;
 
@@ -49,8 +49,8 @@ public class ReservationSystem {
     public boolean checkAvailability(int roomId, String date, String timeSlot) {
         for (Reservation reservation : reservations) {
             if (reservation.getRoom().getRoomId() == roomId &&
-            reservation.getDate().equals(date) &&
-            reservation.getTimeSlot().equals(timeSlot)) {
+                    reservation.getDate().equals(date) &&
+                    reservation.getTimeSlot().equals(timeSlot)) {
                 return false;
             }
         }

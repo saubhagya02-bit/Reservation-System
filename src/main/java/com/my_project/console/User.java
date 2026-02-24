@@ -1,4 +1,4 @@
-package console;
+package com.my_project.console;
 
 public class User {
     private int id;
