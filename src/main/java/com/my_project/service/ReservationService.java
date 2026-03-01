@@ -3,6 +3,7 @@ package com.my_project.service;
 import com.my_project.model.*;
 import com.my_project.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,7 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+    @Transactional
     public Reservation bookRoom(Integer userId, Integer roomId,
                                 LocalDate date, String timeSlot) {
 
