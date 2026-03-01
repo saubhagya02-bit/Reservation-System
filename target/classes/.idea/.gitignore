@@ -1,33 +1,38 @@
 
-# Build files (Maven)
-/target/
-*.class
-*.jar
-*.war
-*.ear
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
 
 # Logs
 *.log
 
-# IntelliJ IDEA
-.idea/
-*.iml
-out/
-
-# OS files
+# OS Files
 .DS_Store
 Thumbs.db
 
-# Environment / Secrets
+# Environment files
 .env
-application.properties
-db.properties
 
-# Maven wrapper (optional keep or ignore)
-.mvn/
-mvnw
-mvnw.cmd
-
-# Temporary files
-*.tmp
-*.swp
+# Application properties with secrets (optional but recommended)
+application-local.properties
