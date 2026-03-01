@@ -1,70 +1,23 @@
 package com.my_project.console;
 
+import com.my_project.service.ReservationService;
+
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args){
-        ReservationSystem system = new ReservationSystem();
+
+    public static void main(String[] args) {
+
+        ReservationService service = new ReservationService();
         Scanner scanner = new Scanner(System.in);
 
-        system.addRoom(1, "Conference Room", 10);
-        system.addRoom(2, "Meeting Room", 5);
-        system.addRoom(3, "Bed Room", 50);
+        System.out.println("Enter name:");
+        String name = scanner.nextLine();
 
-        int choice;
+        System.out.println("Enter email:");
+        String email = scanner.nextLine();
 
-        do {
-            System.out.println("-----Reservation System-----");
-            System.out.println("1. Register User");
-            System.out.println("2. View Rooms");
-            System.out.println("3. Book Room");
-            System.out.println("4. Cancel Reservation");
-            System.out.println("5. View My Reservations");
-            System.out.println("0. Exit");
-
-            choice = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Enter name: ");
-                    String name = scanner.nextLine();
-                    System.out.println("Enter email address: ");
-                    String email = scanner.nextLine();
-                    system.addUser(name, email);
-                    break;
-
-                case 2:
-                    system.viewRooms();
-                    break;
-
-                case 3:
-                    System.out.println("User ID: ");
-                    int uid = scanner.nextInt();
-                    System.out.println("Room ID: ");
-                    int rid = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.println("Date (YYYY-MM-DD): ");
-                    String date = scanner.nextLine();
-                    System.out.println("Time Slot: ");
-                    String slot = scanner.nextLine();
-
-                    system.bookRoom(uid, rid, date, slot);
-                    break;
-
-                case 4:
-                    System.out.println("Reservation ID: ");
-                    int resId = scanner.nextInt();
-                    system.cancelReservation(resId);
-                    break;
-
-                case 5:
-                    System.out.println("User ID: ");
-                    int id = scanner.nextInt();
-                    system.viewUserReservation(id);
-                    break;
-            }
-        } while (choice != 0);
+        service.registerUser(name, email);
 
         scanner.close();
     }

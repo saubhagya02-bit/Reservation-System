@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0dfb5c24-3102-40be-97a3-0178bc617ab4" name="Changes" comment="" />
+    <list default="true" id="0dfb5c24-3102-40be-97a3-0178bc617ab4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/my_project/database/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/my_project/database/DBTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/my_project/database/DBTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/my_project/database/DBTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/my_project/database/DBTest.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,7 +43,7 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ASUS/OneDrive/Desktop/Bookify",
+    "last_opened_file_path": "C:/Users/ASUS/OneDrive/Desktop/Reservation-System",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.23761117",
     "project.structure.side.proportion": "0.2",
@@ -66,16 +72,5 @@
       <updated>1771384875094</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/my_project/database/DBConnection.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
