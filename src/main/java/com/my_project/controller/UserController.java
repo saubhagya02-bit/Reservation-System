@@ -1,7 +1,9 @@
 package com.my_project.controller;
 
+import com.my_project.dto.UserDTO;
 import com.my_project.model.User;
 import com.my_project.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +19,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody UserDTO userDTO) {
+        User user = new User(userDTO.getName(), userDTO.getEmail());
         return repository.save(user);
     }
 
