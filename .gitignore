@@ -1,0 +1,46 @@
+
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Compiled Files
+*.class
+
+# Spring Boot
+/spring.log
+
+# Application Properties (IMPORTANT)
+src/main/resources/application.properties
+src/main/resources/application.yml
+src/main/resources/application-*.properties
+src/main/resources/application-*.yml
+
+# Environment Files
+.env
+.env.*
+
+# Temporary Files
+*.swp
+*.tmp
