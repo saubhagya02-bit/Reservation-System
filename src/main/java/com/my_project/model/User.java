@@ -36,4 +36,14 @@ public class User {
     public void setName(String name) { this.name = name; }
     public void setEmail(String email) { this.email = email; }
     public void setRole(Role role) { this.role = role; }
+
+    public CharSequence getPassword() {
+        return null;
+    }
+
+    public void setPassword(String encode) {
+    }
+
+    public void setRole(com.my_project.model.Role role) {
+    }
 }
