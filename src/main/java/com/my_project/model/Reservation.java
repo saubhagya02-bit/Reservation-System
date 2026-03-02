@@ -22,6 +22,9 @@ public class Reservation {
     private LocalDate date;
     private String timeSlot;
 
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.REMOVE)
+    private Payment payment;
+
     public Reservation() {}
 
     public Reservation(User user, Room room, LocalDate date, String timeSlot) {

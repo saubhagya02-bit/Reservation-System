@@ -10,11 +10,12 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
     private Double amount;
-    private String status; // PAID / FAILED
+    private String status;
 
     public Payment() {}
 

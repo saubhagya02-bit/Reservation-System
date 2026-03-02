@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
@@ -34,11 +34,14 @@ public class ReservationController {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private ReservationService reservationService;
+
+    // GET reservations for a user
     @GetMapping
     public ResponseEntity<?> getUserReservations(@RequestParam Integer userId) {
-        return ResponseEntity.ok(reservationRepository.findAll()
-                .stream().filter(r -> r.getUser().getId().equals(userId))
-                .toList());
+        List<Reservation> reservations = reservationRepository.findByUserId(userId);
+        return ResponseEntity.ok(reservations);
     }
 
     // Book room
@@ -70,16 +73,14 @@ public class ReservationController {
         }
     }
 
+    // Cancel reservation
     @DeleteMapping("/{id}")
     public ResponseEntity<?> cancelReservation(@PathVariable Integer id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
         try {
-            ReservationService reservationService = null;
-            reservationService.cancelReservation(reservation.getId());
-            return ResponseEntity.ok("Reservation cancelled");
+            reservationService.cancelReservation(id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Reservation cancelled"));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 }
