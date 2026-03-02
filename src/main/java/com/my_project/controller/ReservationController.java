@@ -33,21 +33,11 @@ public class ReservationController {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    // Check availability
-    @GetMapping("/availability")
-    public ResponseEntity<?> checkAvailability(
-            @RequestParam Integer roomId,
-            @RequestParam String date,
-            @RequestParam String timeSlot) {
-
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
-
-        LocalDate localDate = LocalDate.parse(date);
-
-        boolean available = !reservationRepository.existsByRoomAndDateAndTimeSlot(room, localDate, timeSlot);
-
-        return ResponseEntity.ok(Collections.singletonMap("available", available));
+    @GetMapping
+    public ResponseEntity<?> getUserReservations(@RequestParam Integer userId) {
+        return ResponseEntity.ok(reservationRepository.findAll()
+                .stream().filter(r -> r.getUser().getId().equals(userId))
+                .toList());
     }
 
     // Book room
