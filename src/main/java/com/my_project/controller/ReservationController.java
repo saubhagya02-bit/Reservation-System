@@ -9,6 +9,7 @@ import com.my_project.repository.PaymentRepository;
 import com.my_project.repository.ReservationRepository;
 import com.my_project.repository.RoomRepository;
 import com.my_project.repository.UserRepository;
+import com.my_project.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +67,19 @@ public class ReservationController {
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> cancelReservation(@PathVariable Integer id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+        try {
+            ReservationService reservationService = null;
+            reservationService.cancelReservation(reservation.getId());
+            return ResponseEntity.ok("Reservation cancelled");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

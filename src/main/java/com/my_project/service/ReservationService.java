@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class ReservationService {
@@ -26,6 +28,7 @@ public class ReservationService {
     public Reservation bookRoom(Integer userId, Integer roomId,
                                 LocalDate date, String timeSlot) {
 
+        // Check double booking
         if (reservationRepository.existsByRoomIdAndDateAndTimeSlot(roomId, date, timeSlot)) {
             throw new RuntimeException("Room already booked!");
         }
@@ -38,5 +41,28 @@ public class ReservationService {
 
         Reservation reservation = new Reservation(user, room, date, timeSlot);
         return reservationRepository.save(reservation);
+    }
+
+    // Cancel a reservation with rules
+    @Transactional
+    public void cancelReservation(Integer reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        // Convert reservation date + timeSlot to LocalDateTime
+        LocalTime slotTime = parseTimeSlot(reservation.getTimeSlot());
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservation.getDate(), slotTime);
+
+        // Cannot cancel if less than 2 hours left
+        if (LocalDateTime.now().isAfter(reservationDateTime.minusHours(2))) {
+            throw new RuntimeException("Cannot cancel less than 2 hours before reservation");
+        }
+
+        reservationRepository.delete(reservation);
+    }
+
+    private LocalTime parseTimeSlot(String timeSlot) {
+        String start = timeSlot.split("-")[0];
+        return LocalTime.parse(start);
     }
 }
