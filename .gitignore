@@ -1,46 +1,48 @@
-
-# Maven
+# Maven #
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
-# IntelliJ IDEA
+# IDE - IntelliJ #
 .idea/
-*.iml
 *.iws
+*.iml
 *.ipr
 
-# Eclipse
+# IDE - VS Code #
+.vscode/
+
+# Eclipse #
 .project
 .classpath
 .settings/
 
-# VS Code
-.vscode/
-
-# Logs
+# Logs #
 *.log
-logs/
 
-# OS Files
+# OS Files #
 .DS_Store
 Thumbs.db
 
-# Compiled Files
-*.class
-
-# Spring Boot
+# Spring Boot #
 /spring.log
 
-# Application Properties (IMPORTANT)
+# Application Properties #
+
 src/main/resources/application.properties
+src/main/resources/application-local.properties
 src/main/resources/application.yml
-src/main/resources/application-*.properties
-src/main/resources/application-*.yml
 
-# Environment Files
-.env
-.env.*
+# H2 Database Files (if using local file DB) #
+*.mv.db
+*.trace.db
 
-# Temporary Files
+# MySQL Dump Files #
+*.sql
+
+# Node (if frontend in same repo) #
+node_modules/
+dist/
+build/
+
+# Mac/Linux #
 *.swp
-*.tmp
