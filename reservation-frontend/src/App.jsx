@@ -1,4 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import RoomList from "./pages/RoomList";
+import BookingCalendar from "./pages/BookingCalendar";
+import MyReservations from "./pages/MyReservations";
 import Navbar from "./components/Navbar";
 
 function App() {
