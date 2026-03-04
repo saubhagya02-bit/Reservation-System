@@ -24,7 +24,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to="/" className="text-white text-2xl font-bold tracking-wide">
-            Bookify
+            ReserveHub
           </Link>
 
           {/* Right Side Links */}

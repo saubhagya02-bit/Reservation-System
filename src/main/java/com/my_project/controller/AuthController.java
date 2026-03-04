@@ -1,52 +1,58 @@
 package com.my_project.controller;
 
-import com.my_project.model.Role;
+import com.my_project.dto.RegisterRequest;
+import com.my_project.dto.LoginRequest;
 import com.my_project.model.User;
+import com.my_project.model.Role;
 import com.my_project.repository.UserRepository;
 import com.my_project.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
+    // Registration
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user){
-        if(userRepository.existsByEmail(user.getEmail())){
-            return ResponseEntity.badRequest().body("Email already exists");
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.status(400).body(Map.of("error", "Email already exists"));
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if(user.getRole() == null) user.setRole(Role.USER);
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
+
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(Map.of("message", "Registration successful"));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User login){
-        User user = userRepository.findAll().stream()
-                .filter(u -> u.getEmail().equals(login.getEmail()))
-                .findFirst()
-                .orElse(null);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
-        if(user == null || !passwordEncoder.matches(login.getPassword(), user.getPassword())){
-            return ResponseEntity.badRequest().body("Invalid credentials");
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
         }
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }

@@ -33,7 +33,7 @@ public class ReservationService {
             throw new RuntimeException("Room already booked!");
         }
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(Math.toIntExact(Long.valueOf(userId)))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Room room = roomRepository.findById(roomId)

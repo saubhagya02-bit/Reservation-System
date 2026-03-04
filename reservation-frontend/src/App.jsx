@@ -13,13 +13,12 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-          <Route path="/" element={<Navigate to="/rooms" />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-
-          <Route path="/rooms" element={isLoggedIn ? <RoomList /> : <Navigate to="/login" />} />
-          <Route path="/calendar/:roomId" element={isLoggedIn ? <BookingCalendar /> : <Navigate to="/login" />} />
-          <Route path="my-reservations" element={isLoggedIn ? <MyReservations /> : <Navigate to="/login" />} />
+        <Route path="/" element={<RoomList />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/rooms" element={isLoggedIn ? <RoomList /> : <Navigate to="/login" />} />
+        <Route path="/calendar/:roomId" element={isLoggedIn ? <BookingCalendar /> : <Navigate to="/login" />} />
+        <Route path="/my-reservations" element={isLoggedIn ? <MyReservations /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );
