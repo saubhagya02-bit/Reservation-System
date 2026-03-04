@@ -1,9 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
 
 function App() {
+  const isLoggedIn = !!localStorage.getItem("token");
+
   return (
     <Router>
-      <h1 className="text-4xl text-blue-500">Reservation System</h1>
+      <Navbar />
+      <Routes>
+          <Route path="/" element={<Navigate to="/rooms" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route path="/rooms" element={isLoggedIn ? <RoomList /> : <Navigate to="/login" />} />
+          <Route path="/calendar/:roomId" element={isLoggedIn ? <BookingCalendar /> : <Navigate to="/login" />} />
+          <Route path="my-reservations" element={isLoggedIn ? <MyReservations /> : <Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 }
