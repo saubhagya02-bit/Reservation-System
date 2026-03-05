@@ -32,6 +32,13 @@ export default function Navbar() {
             
             {/* Public Links */}
             <Link
+              to="/"
+              className="text-white hover:text-gray-200 transition"
+            >
+              Home
+            </Link>
+
+            <Link
               to="/about"
               className="text-white hover:text-gray-200 transition"
             >

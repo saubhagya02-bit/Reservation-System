@@ -5,6 +5,7 @@ import RoomList from "./pages/RoomList";
 import BookingCalendar from "./pages/BookingCalendar";
 import MyReservations from "./pages/MyReservations";
 import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 
 function App() {
   const isLoggedIn = !!localStorage.getItem("token");
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/" element={<RoomList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
