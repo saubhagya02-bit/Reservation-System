@@ -21,17 +21,17 @@ export default function Home() {
       </div>
 
       <div className="py-16 px-6 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <div className="bg-white p-6 rounded shadow text-center">
+        <div className="bg-white p-6 rounded shadow transition transform hover:-translate-y-2 hover:shadow-xl text-center">
           <h3 className="text-xl font-bold mb-2">Easy Booking</h3>
           <p>Reserve your room quickly with a few simple clicks.</p>
         </div>
 
-        <div className="bg-white p-6 rounded shadow text-center">
+        <div className="bg-white p-6 rounded shadow transition transform hover:-translate-y-2 hover:shadow-xl text-center">
           <h3 className="text-xl font-bold mb-2">Real-time Availability</h3>
           <p>See available rooms instantly and make reservations anytime.</p>
         </div>
 
-        <div className="bg-white p-6 rounded shadow text-center">
+        <div className="bg-white p-6 rounded shadow transition transform hover:-translate-y-2 hover:shadow-xl text-center">
           <h3 className="text-xl font-bold mb-2">Instant Confirmation</h3>
           <p>
             Receive immediate confirmation after booking your room with secure
