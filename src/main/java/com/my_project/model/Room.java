@@ -15,8 +15,9 @@ public class Room {
     private Integer id;
 
     private String name;
-
     private Integer number;
-
     private Integer capacity;
+    private Double price;
+    private String imagePath;
+
 }

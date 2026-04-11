@@ -12,6 +12,8 @@ import com.my_project.repository.UserRepository;
 import com.my_project.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reservations")
+
+@RequestMapping("/api/reservations")
 public class ReservationController {
 
     @Autowired
@@ -37,19 +40,23 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    // GET reservations for a user
     @GetMapping
-    public ResponseEntity<?> getUserReservations(@RequestParam Integer userId) {
-        List<Reservation> reservations = reservationRepository.findByUserId(userId);
+    public ResponseEntity<?> getUserReservations(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        List<Reservation> reservations = reservationRepository.findByUserId(user.getId());
         return ResponseEntity.ok(reservations);
     }
 
     // Book room
     @PostMapping("/book")
     @Transactional
-    public ResponseEntity<?> bookRoom(@RequestBody ReservationDTO req) {
+    public ResponseEntity<?> bookRoom(@RequestBody ReservationDTO req,
+                                      Authentication authentication) {
         try {
-            User user = userRepository.findById(req.getUserId())
+            String email = authentication.getName();
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
             Room room = roomRepository.findById(req.getRoomId())
@@ -57,7 +64,7 @@ public class ReservationController {
 
             if (reservationRepository.existsByRoomAndDateAndTimeSlot(room, req.getDate(), req.getTimeSlot())) {
                 return ResponseEntity.status(409)
-                        .body(Collections.singletonMap("error", "Room already booked!"));
+                        .body(Collections.singletonMap("error", "Room already booked for this date and time slot"));
             }
 
             Reservation reservation = new Reservation(user, room, req.getDate(), req.getTimeSlot());
@@ -73,12 +80,31 @@ public class ReservationController {
         }
     }
 
-    // Cancel reservation
+    // Cancel reservation — user can only cancel their own; admin can cancel any
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> cancelReservation(@PathVariable Integer id) {
+    public ResponseEntity<?> cancelReservation(@PathVariable Integer id,
+                                               Authentication authentication) {
         try {
+            boolean isAdmin = authentication.getAuthorities()
+                    .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+            if (!isAdmin) {
+                String email = authentication.getName();
+                User currentUser = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+                Reservation reservation = reservationRepository.findById(id)
+                        .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+                if (!reservation.getUser().getId().equals(currentUser.getId())) {
+                    return ResponseEntity.status(403)
+                            .body(Collections.singletonMap("error", "You can only cancel your own reservations"));
+                }
+            }
+
             reservationService.cancelReservation(id);
             return ResponseEntity.ok(Collections.singletonMap("message", "Reservation cancelled"));
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
         }
