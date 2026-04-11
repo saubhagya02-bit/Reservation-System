@@ -39,4 +39,6 @@ public class Reservation {
     public Room getRoom() { return room; }
     public LocalDate getDate() { return date; }
     public String getTimeSlot() { return timeSlot; }
+
+    public Payment getPayment() { return payment; }
 }
