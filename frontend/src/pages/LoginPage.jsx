@@ -120,7 +120,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 required
-                placeholder="Your Email"
+                placeholder="you@example.com"
                 style={inputStyle("email")}
                 value={form.email}
                 onFocus={() => setFocus("email")}
@@ -194,7 +194,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Sign in button */}
             <button
               type="submit"
               disabled={loading}
@@ -239,7 +238,7 @@ export default function LoginPage() {
                   Signing in...
                 </>
               ) : (
-                "Sign in"
+                "Sign in "
               )}
             </button>
           </form>
@@ -302,7 +301,15 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear,
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-textfield-decoration-container { display: none !important; }
+        input::-webkit-contacts-auto-fill-button,
+        input::-webkit-credentials-auto-fill-button { visibility: hidden; pointer-events: none; }
+    `}</style>
     </div>
   );
 }

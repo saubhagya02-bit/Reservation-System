@@ -151,7 +151,7 @@ export default function RegisterPage() {
               <input
                 type="text"
                 required
-                placeholder="Enter Full Name"
+                placeholder="John Smith"
                 style={inputStyle("name")}
                 value={form.name}
                 onFocus={() => setFocus("name")}
@@ -177,7 +177,7 @@ export default function RegisterPage() {
               <input
                 type="email"
                 required
-                placeholder="Your Email"
+                placeholder="you@example.com"
                 style={inputStyle("email")}
                 value={form.email}
                 onFocus={() => setFocus("email")}
@@ -234,7 +234,6 @@ export default function RegisterPage() {
                 </button>
               </div>
 
-              {/* Password strength bar */}
               {form.password && strength && (
                 <div style={{ marginTop: "0.6rem" }}>
                   <div
@@ -271,7 +270,6 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
@@ -316,7 +314,7 @@ export default function RegisterPage() {
                   Creating account...
                 </>
               ) : (
-                "Create account"
+                "Create account "
               )}
             </button>
           </form>
@@ -359,6 +357,7 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+
         <p
           style={{
             textAlign: "center",
@@ -378,7 +377,15 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear,
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-textfield-decoration-container { display: none !important; }
+        input::-webkit-contacts-auto-fill-button,
+        input::-webkit-credentials-auto-fill-button { visibility: hidden; pointer-events: none; }
+    `}</style>
     </div>
   );
 }

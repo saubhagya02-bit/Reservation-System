@@ -3,24 +3,36 @@ import api from "../api/axios";
 
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [msg, setMsg] = useState({ text: "", type: "" });
+  const [fetchLoading, setFetchLoading] = useState(true);
+  const [msg, setMsg]                   = useState({ text: "", type: "" });
 
   async function fetchReservations() {
+    setFetchLoading(true);
     try {
-      const res = await api.get("/api/reservations");
-      setReservations(res.data);
-    } catch {
-      setMsg({ text: "Failed to load reservations.", type: "error" });
+      const res  = await api.get("/api/reservations");
+      const data = res.data;
+      if (Array.isArray(data)) {
+        setReservations(data);
+      } else {
+        console.error("Reservations API did not return an array:", data);
+        setReservations([]);
+        setMsg({ text: "Unexpected response from server.", type: "error" });
+      }
+    } catch (err) {
+      const status  = err.response?.status;
+      const message = err.response?.data?.error || err.message || "Unknown error";
+      console.error("Reservations fetch failed:", status, message);
+      setMsg({ text: `Failed to load reservations (${status ?? "network error"}): ${message}`, type: "error" });
+      setReservations([]);
     } finally {
-      setLoading(false);
+      setFetchLoading(false);
     }
   }
 
   useEffect(() => { fetchReservations(); }, []);
 
   async function handleCancel(id) {
-    if (!window.confirm("Are you sure you want to cancel this reservation?")) return;
+    if (!window.confirm("Cancel this reservation?")) return;
     try {
       await api.delete(`/api/reservations/${id}`);
       setMsg({ text: "Reservation cancelled successfully.", type: "success" });
@@ -30,82 +42,143 @@ export default function ReservationsPage() {
     }
   }
 
+  const msgBox = (m) => m.text ? (
+    <div style={{
+      fontSize: "0.85rem", borderRadius: "8px",
+      padding: "0.75rem 1rem", marginBottom: "1.25rem",
+      display: "flex", alignItems: "center", gap: "0.5rem",
+      ...(m.type === "success"
+        ? { backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#16a34a" }
+        : { backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626" }),
+    }}>
+      {m.type === "success" ? "✅" : "⚠️"} {m.text}
+    </div>
+  ) : null;
+
+  // Skeleton row
+  const SkeletonRow = () => (
+    <div style={{
+      backgroundColor: "#ffffff", border: "1px solid #e5e7eb",
+      borderRadius: "12px", padding: "1.25rem 1.5rem",
+      display: "flex", justifyContent: "space-between", alignItems: "center",
+    }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ height: "14px", width: "40%", backgroundColor: "#f3f4f6", borderRadius: "4px", marginBottom: "0.6rem", animation: "pulse 1.5s ease-in-out infinite" }} />
+        <div style={{ height: "11px", width: "60%", backgroundColor: "#f3f4f6", borderRadius: "4px", animation: "pulse 1.5s ease-in-out infinite" }} />
+      </div>
+      <div style={{ height: "32px", width: "72px", backgroundColor: "#f3f4f6", borderRadius: "8px", animation: "pulse 1.5s ease-in-out infinite" }} />
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ maxWidth: "48rem", margin: "0 auto", padding: "3rem 1.5rem" }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: "2rem" }}>
+          <h1 style={{ fontSize: "2rem", fontWeight: 700, color: "#111827", fontFamily: "'Playfair Display', serif" }}>
             My Bookings
           </h1>
-          <p className="text-gray-500 text-sm mt-1">Manage your reservations and payments</p>
+          <p style={{ color: "#6b7280", fontSize: "0.875rem", marginTop: "0.25rem" }}>
+            {fetchLoading ? "Loading..." : `${reservations.length} reservation${reservations.length !== 1 ? "s" : ""}`}
+          </p>
         </div>
 
-        {msg.text && (
-          <div className={`text-sm rounded-lg px-4 py-3 mb-6 border ${
-            msg.type === "success"
-              ? "text-green-700 bg-green-50 border-green-200"
-              : "text-red-600 bg-red-50 border-red-200"
-          }`}>
-            {msg.text}
-          </div>
-        )}
+        {msgBox(msg)}
 
-        {loading ? (
-          <div className="space-y-3">
-            {[1,2,3].map(i => (
-              <div key={i} className="bg-white rounded-2xl h-24 animate-pulse border border-gray-200" />
-            ))}
+        {/* 3 states: loading / empty / list */}
+        {fetchLoading ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {[1, 2, 3].map(i => <SkeletonRow key={i} />)}
           </div>
         ) : reservations.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-5xl mb-4">📭</div>
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">No bookings yet</h2>
-            <p className="text-gray-400 text-sm">Browse available rooms and make your first reservation.</p>
+          <div style={{
+            textAlign: "center", padding: "5rem 0",
+            backgroundColor: "#ffffff", borderRadius: "16px",
+            border: "1px solid #e5e7eb",
+          }}>
+            <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>📭</div>
+            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, color: "#374151", marginBottom: "0.4rem" }}>
+              No bookings yet
+            </h2>
+            <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
+              Browse available rooms and make your first reservation.
+            </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {reservations.map(r => (
-              <div key={r.id} className="bg-white border border-gray-200 rounded-2xl px-6 py-5 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">
+              <div key={r.id}
+                style={{
+                  backgroundColor: "#ffffff", border: "1px solid #e5e7eb",
+                  borderRadius: "12px", padding: "1.25rem 1.5rem",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+                  transition: "box-shadow 0.2s ease",
+                }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)"}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"}
+              >
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+                  <div style={{ flex: 1 }}>
+                    {/* Room name + badge */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
+                      <h3 style={{ fontWeight: 600, color: "#111827", fontSize: "0.95rem" }}>
                         {r.room?.name ?? "Room"}
                       </h3>
-                      <span className="text-xs bg-brand-50 text-brand-700 border border-brand-200 px-2 py-0.5 rounded-full">
+                      <span style={{
+                        fontSize: "0.7rem", fontWeight: 500,
+                        backgroundColor: "#eff6ff", color: "#3b7df8",
+                        border: "1px solid #bfdbfe", borderRadius: "999px",
+                        padding: "0.15rem 0.55rem",
+                      }}>
                         Room {r.room?.number}
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 mt-2">
-                      <span className="flex items-center gap-1">
-                        📅 <span>{r.date}</span>
+                    {/* Date + time */}
+                    <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
+                      <span style={{ fontSize: "0.82rem", color: "#6b7280", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                        📅 {r.date}
                       </span>
-                      <span className="flex items-center gap-1">
-                        🕐 <span>{r.timeSlot}</span>
+                      <span style={{ fontSize: "0.82rem", color: "#6b7280", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                        🕐 {r.timeSlot}
                       </span>
                     </div>
 
-                    {/* Payment info */}
-                    <div className="mt-3 flex items-center gap-3">
-                      {r.payment ? (
-                        <>
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">
-                            {r.payment.status}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-700">
-                            ${r.payment.amount?.toFixed(2)}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-xs text-gray-400">Payment info unavailable</span>
-                      )}
-                    </div>
+                    {/* Payment */}
+                    {r.payment ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{
+                          fontSize: "0.7rem", fontWeight: 600,
+                          backgroundColor: "#f0fdf4", color: "#16a34a",
+                          border: "1px solid #bbf7d0", borderRadius: "999px",
+                          padding: "0.15rem 0.6rem",
+                        }}>
+                          {r.payment.status}
+                        </span>
+                        <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#111827" }}>
+                          ${r.payment.amount?.toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>No payment info</span>
+                    )}
                   </div>
 
+                  {/* Cancel button */}
                   <button
                     onClick={() => handleCancel(r.id)}
-                    className="text-sm text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 rounded-lg px-4 py-2 transition whitespace-nowrap flex-shrink-0"
+                    style={{
+                      fontSize: "0.82rem", fontWeight: 600,
+                      color: "#dc2626", backgroundColor: "#fef2f2",
+                      border: "1px solid #fecaca", borderRadius: "8px",
+                      padding: "0.45rem 0.9rem", cursor: "pointer",
+                      fontFamily: "'Inter', sans-serif",
+                      transition: "background-color 0.15s",
+                      whiteSpace: "nowrap", flexShrink: 0,
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fee2e2"}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fef2f2"}
                   >
                     Cancel
                   </button>
@@ -115,6 +188,7 @@ export default function ReservationsPage() {
           </div>
         )}
       </div>
+      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
     </div>
   );
 }

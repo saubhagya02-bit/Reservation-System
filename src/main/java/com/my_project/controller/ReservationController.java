@@ -25,20 +25,12 @@ import java.util.List;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+    @Autowired private ReservationRepository reservationRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoomRepository roomRepository;
+    @Autowired private PaymentRepository paymentRepository;
+    @Autowired private ReservationService reservationService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoomRepository roomRepository;
-
-    @Autowired
-    private PaymentRepository paymentRepository;
-
-    @Autowired
-    private ReservationService reservationService;
 
     @GetMapping
     public ResponseEntity<?> getUserReservations(Authentication authentication) {
@@ -49,7 +41,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
-    // Book room
+
     @PostMapping("/book")
     @Transactional
     public ResponseEntity<?> bookRoom(@RequestBody ReservationDTO req,
@@ -80,7 +72,7 @@ public class ReservationController {
         }
     }
 
-    // Cancel reservation — user can only cancel their own; admin can cancel any
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> cancelReservation(@PathVariable Integer id,
                                                Authentication authentication) {

@@ -55,7 +55,7 @@ export default function RoomsPage() {
         </h2>
         <p className="text-gray-500 text-sm mb-6">Create a free account or log in to view and book available rooms.</p>
         <div className="flex gap-3">
-          <Link to="/login" className="bg-brand-600 hover:bg-brand-700 text-white font-medium px-6 py-2.5 rounded-lg text-sm transition">
+          <Link to="/login" className="border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium px-6 py-2.5 rounded-lg text-sm transition">
             Sign in
           </Link>
           <Link to="/register" className="border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium px-6 py-2.5 rounded-lg text-sm transition">
@@ -127,13 +127,13 @@ export default function RoomsPage() {
                   {user.role === "USER" ? (
                     <button
                       onClick={() => { setSelected(room); setMsg({ text: "", type: "" }); }}
-                      className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-2 text-sm font-medium transition"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 text-sm font-medium transition"
                     >
                       Book this room
                     </button>
                   ) : (
                     <span className="block w-full text-center text-xs text-gray-400 py-2">
-                      Admin view — go to Manage Rooms to edit
+                      
                     </span>
                   )}
                 </div>
@@ -191,7 +191,7 @@ export default function RoomsPage() {
                 </button>
                 <button
                   type="submit" disabled={booking}
-                  className="flex-1 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white rounded-lg py-2.5 text-sm font-semibold transition"
+                  className="flex-1 border border-gray-300 text-gray-600 rounded-lg py-2.5 text-sm hover:bg-gray-50 transition"
                 >
                   {booking ? "Confirming..." : "Confirm & Pay"}
                 </button>
