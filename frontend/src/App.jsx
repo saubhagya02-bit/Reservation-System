@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -57,6 +58,24 @@ export default function App() {
           </main>
 
           <Footer />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3500,
+              style: {
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.875rem",
+                borderRadius: "10px",
+                padding: "0.75rem 1rem",
+              },
+              success: {
+                iconTheme: { primary: "#16a34a", secondary: "#f0fdf4" },
+              },
+              error: {
+                iconTheme: { primary: "#dc2626", secondary: "#fef2f2" },
+              },
+            }}
+          />
         </div>
       </BrowserRouter>
     </AuthProvider>

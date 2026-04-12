@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
@@ -17,13 +18,17 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+    const toastId = toast.loading("Signing in...");
     try {
       const res = await api.post("/api/auth/login", form);
       login(res.data.token);
       const decoded = jwtDecode(res.data.token);
+      toast.success("Welcome back!", { id: toastId });
       navigate(decoded.role === "ADMIN" ? "/admin" : "/rooms");
     } catch (err) {
-      setError(err.response?.data?.error || "Invalid email or password.");
+      const message = err.response?.data?.error || "Invalid email or password.";
+      toast.error(message, { id: toastId });
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -73,6 +78,7 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Card */}
         <div
           style={{
             backgroundColor: "#ffffff",
@@ -194,6 +200,7 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Sign in button */}
             <button
               type="submit"
               disabled={loading}
@@ -238,7 +245,7 @@ export default function LoginPage() {
                   Signing in...
                 </>
               ) : (
-                "Sign in "
+                "Sign in"
               )}
             </button>
           </form>

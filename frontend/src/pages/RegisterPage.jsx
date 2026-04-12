@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 
@@ -27,14 +28,20 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+    const toastId = toast.loading("Creating your account...");
     try {
       await api.post("/api/auth/register", form);
-      setSuccess("Account created successfully! Redirecting to login...");
+      toast.success("Account created! Redirecting to login...", {
+        id: toastId,
+        duration: 2000,
+      });
+      setSuccess("Account created! Redirecting to login...");
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(
-        err.response?.data?.error || "Registration failed. Please try again.",
-      );
+      const message =
+        err.response?.data?.error || "Registration failed. Please try again.";
+      toast.error(message, { id: toastId });
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -67,6 +74,7 @@ export default function RegisterPage() {
       }}
     >
       <div style={{ width: "100%", maxWidth: "460px" }}>
+        {/* Heading */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <h1
             style={{
@@ -84,6 +92,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
+        {/* Card */}
         <div
           style={{
             backgroundColor: "#ffffff",
@@ -151,7 +160,7 @@ export default function RegisterPage() {
               <input
                 type="text"
                 required
-                placeholder="John Smith"
+                placeholder="Your Name"
                 style={inputStyle("name")}
                 value={form.name}
                 onFocus={() => setFocus("name")}
@@ -234,6 +243,7 @@ export default function RegisterPage() {
                 </button>
               </div>
 
+              {/* Password strength bar */}
               {form.password && strength && (
                 <div style={{ marginTop: "0.6rem" }}>
                   <div
@@ -270,6 +280,7 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
@@ -314,7 +325,7 @@ export default function RegisterPage() {
                   Creating account...
                 </>
               ) : (
-                "Create account "
+                "Create account"
               )}
             </button>
           </form>

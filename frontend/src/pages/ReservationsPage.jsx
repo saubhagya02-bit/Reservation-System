@@ -1,104 +1,160 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import api from "../api/axios";
 
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState([]);
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [msg, setMsg]                   = useState({ text: "", type: "" });
 
   async function fetchReservations() {
     setFetchLoading(true);
     try {
-      const res  = await api.get("/api/reservations");
+      const res = await api.get("/api/reservations");
       const data = res.data;
       if (Array.isArray(data)) {
         setReservations(data);
       } else {
-        console.error("Reservations API did not return an array:", data);
         setReservations([]);
-        setMsg({ text: "Unexpected response from server.", type: "error" });
+        toast.error("Unexpected response from server.");
       }
     } catch (err) {
-      const status  = err.response?.status;
-      const message = err.response?.data?.error || err.message || "Unknown error";
-      console.error("Reservations fetch failed:", status, message);
-      setMsg({ text: `Failed to load reservations (${status ?? "network error"}): ${message}`, type: "error" });
+      const status = err.response?.status;
+      const message =
+        err.response?.data?.error || err.message || "Unknown error";
+      toast.error(
+        `Failed to load reservations (${status ?? "network error"}): ${message}`,
+      );
       setReservations([]);
     } finally {
       setFetchLoading(false);
     }
   }
 
-  useEffect(() => { fetchReservations(); }, []);
+  useEffect(() => {
+    fetchReservations();
+  }, []);
 
   async function handleCancel(id) {
     if (!window.confirm("Cancel this reservation?")) return;
+    const toastId = toast.loading("Cancelling...");
     try {
       await api.delete(`/api/reservations/${id}`);
-      setMsg({ text: "Reservation cancelled successfully.", type: "success" });
+      toast.success("Reservation cancelled.", { id: toastId });
       fetchReservations();
     } catch (err) {
-      setMsg({ text: err.response?.data?.error || "Cancel failed.", type: "error" });
+      toast.error(err.response?.data?.error || "Cancel failed.", {
+        id: toastId,
+      });
     }
   }
 
-  const msgBox = (m) => m.text ? (
-    <div style={{
-      fontSize: "0.85rem", borderRadius: "8px",
-      padding: "0.75rem 1rem", marginBottom: "1.25rem",
-      display: "flex", alignItems: "center", gap: "0.5rem",
-      ...(m.type === "success"
-        ? { backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", color: "#16a34a" }
-        : { backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626" }),
-    }}>
-      {m.type === "success" ? "✅" : "⚠️"} {m.text}
-    </div>
-  ) : null;
-
-  // Skeleton row
   const SkeletonRow = () => (
-    <div style={{
-      backgroundColor: "#ffffff", border: "1px solid #e5e7eb",
-      borderRadius: "12px", padding: "1.25rem 1.5rem",
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-    }}>
+    <div
+      style={{
+        backgroundColor: "#ffffff",
+        border: "1px solid #e5e7eb",
+        borderRadius: "12px",
+        padding: "1.25rem 1.5rem",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <div style={{ flex: 1 }}>
-        <div style={{ height: "14px", width: "40%", backgroundColor: "#f3f4f6", borderRadius: "4px", marginBottom: "0.6rem", animation: "pulse 1.5s ease-in-out infinite" }} />
-        <div style={{ height: "11px", width: "60%", backgroundColor: "#f3f4f6", borderRadius: "4px", animation: "pulse 1.5s ease-in-out infinite" }} />
+        <div
+          style={{
+            height: "14px",
+            width: "40%",
+            backgroundColor: "#f3f4f6",
+            borderRadius: "4px",
+            marginBottom: "0.6rem",
+            animation: "pulse 1.5s ease-in-out infinite",
+          }}
+        />
+        <div
+          style={{
+            height: "11px",
+            width: "60%",
+            backgroundColor: "#f3f4f6",
+            borderRadius: "4px",
+            animation: "pulse 1.5s ease-in-out infinite",
+          }}
+        />
       </div>
-      <div style={{ height: "32px", width: "72px", backgroundColor: "#f3f4f6", borderRadius: "8px", animation: "pulse 1.5s ease-in-out infinite" }} />
+      <div
+        style={{
+          height: "32px",
+          width: "72px",
+          backgroundColor: "#f3f4f6",
+          borderRadius: "8px",
+          animation: "pulse 1.5s ease-in-out infinite",
+        }}
+      />
     </div>
   );
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", fontFamily: "'Inter', sans-serif" }}>
-      <div style={{ maxWidth: "48rem", margin: "0 auto", padding: "3rem 1.5rem" }}>
-
-        {/* Header */}
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#f3f4f6",
+        fontFamily: "'Inter', sans-serif",
+      }}
+    >
+      <div
+        style={{ maxWidth: "48rem", margin: "0 auto", padding: "3rem 1.5rem" }}
+      >
         <div style={{ marginBottom: "2rem" }}>
-          <h1 style={{ fontSize: "2rem", fontWeight: 700, color: "#111827", fontFamily: "'Playfair Display', serif" }}>
+          <h1
+            style={{
+              fontSize: "2rem",
+              fontWeight: 700,
+              color: "#111827",
+              fontFamily: "'Playfair Display', serif",
+            }}
+          >
             My Bookings
           </h1>
-          <p style={{ color: "#6b7280", fontSize: "0.875rem", marginTop: "0.25rem" }}>
-            {fetchLoading ? "Loading..." : `${reservations.length} reservation${reservations.length !== 1 ? "s" : ""}`}
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "0.875rem",
+              marginTop: "0.25rem",
+            }}
+          >
+            {fetchLoading
+              ? "Loading..."
+              : `${reservations.length} reservation${reservations.length !== 1 ? "s" : ""}`}
           </p>
         </div>
 
-        {msgBox(msg)}
-
-        {/* 3 states: loading / empty / list */}
         {fetchLoading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {[1, 2, 3].map(i => <SkeletonRow key={i} />)}
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+          >
+            {[1, 2, 3].map((i) => (
+              <SkeletonRow key={i} />
+            ))}
           </div>
         ) : reservations.length === 0 ? (
-          <div style={{
-            textAlign: "center", padding: "5rem 0",
-            backgroundColor: "#ffffff", borderRadius: "16px",
-            border: "1px solid #e5e7eb",
-          }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "5rem 0",
+              backgroundColor: "#ffffff",
+              borderRadius: "16px",
+              border: "1px solid #e5e7eb",
+            }}
+          >
             <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>📭</div>
-            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, color: "#374151", marginBottom: "0.4rem" }}>
+            <h2
+              style={{
+                fontSize: "1.1rem",
+                fontWeight: 600,
+                color: "#374151",
+                marginBottom: "0.4rem",
+              }}
+            >
               No bookings yet
             </h2>
             <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
@@ -106,79 +162,143 @@ export default function ReservationsPage() {
             </p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {reservations.map(r => (
-              <div key={r.id}
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+          >
+            {reservations.map((r) => (
+              <div
+                key={r.id}
                 style={{
-                  backgroundColor: "#ffffff", border: "1px solid #e5e7eb",
-                  borderRadius: "12px", padding: "1.25rem 1.5rem",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "12px",
+                  padding: "1.25rem 1.5rem",
                   boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
                   transition: "box-shadow 0.2s ease",
                 }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)"}
-                onMouseLeave={e => e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    "0 4px 16px rgba(0,0,0,0.08)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    "0 1px 4px rgba(0,0,0,0.05)")
+                }
               >
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    gap: "1rem",
+                  }}
+                >
                   <div style={{ flex: 1 }}>
-                    {/* Room name + badge */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
-                      <h3 style={{ fontWeight: 600, color: "#111827", fontSize: "0.95rem" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        marginBottom: "0.5rem",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <h3
+                        style={{
+                          fontWeight: 600,
+                          color: "#111827",
+                          fontSize: "0.95rem",
+                        }}
+                      >
                         {r.room?.name ?? "Room"}
                       </h3>
-                      <span style={{
-                        fontSize: "0.7rem", fontWeight: 500,
-                        backgroundColor: "#eff6ff", color: "#3b7df8",
-                        border: "1px solid #bfdbfe", borderRadius: "999px",
-                        padding: "0.15rem 0.55rem",
-                      }}>
+                      <span
+                        style={{
+                          fontSize: "0.7rem",
+                          fontWeight: 500,
+                          backgroundColor: "#eff6ff",
+                          color: "#3b7df8",
+                          border: "1px solid #bfdbfe",
+                          borderRadius: "999px",
+                          padding: "0.15rem 0.55rem",
+                        }}
+                      >
                         Room {r.room?.number}
                       </span>
                     </div>
-
-                    {/* Date + time */}
-                    <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
-                      <span style={{ fontSize: "0.82rem", color: "#6b7280", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "1.25rem",
+                        flexWrap: "wrap",
+                        marginBottom: "0.6rem",
+                      }}
+                    >
+                      <span style={{ fontSize: "0.82rem", color: "#6b7280" }}>
                         📅 {r.date}
                       </span>
-                      <span style={{ fontSize: "0.82rem", color: "#6b7280", display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                      <span style={{ fontSize: "0.82rem", color: "#6b7280" }}>
                         🕐 {r.timeSlot}
                       </span>
                     </div>
-
-                    {/* Payment */}
                     {r.payment ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{
-                          fontSize: "0.7rem", fontWeight: 600,
-                          backgroundColor: "#f0fdf4", color: "#16a34a",
-                          border: "1px solid #bbf7d0", borderRadius: "999px",
-                          padding: "0.15rem 0.6rem",
-                        }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "0.7rem",
+                            fontWeight: 600,
+                            backgroundColor: "#f0fdf4",
+                            color: "#16a34a",
+                            border: "1px solid #bbf7d0",
+                            borderRadius: "999px",
+                            padding: "0.15rem 0.6rem",
+                          }}
+                        >
                           {r.payment.status}
                         </span>
-                        <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#111827" }}>
+                        <span
+                          style={{
+                            fontSize: "0.875rem",
+                            fontWeight: 700,
+                            color: "#111827",
+                          }}
+                        >
                           ${r.payment.amount?.toFixed(2)}
                         </span>
                       </div>
                     ) : (
-                      <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>No payment info</span>
+                      <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                        No payment info
+                      </span>
                     )}
                   </div>
-
-                  {/* Cancel button */}
                   <button
                     onClick={() => handleCancel(r.id)}
                     style={{
-                      fontSize: "0.82rem", fontWeight: 600,
-                      color: "#dc2626", backgroundColor: "#fef2f2",
-                      border: "1px solid #fecaca", borderRadius: "8px",
-                      padding: "0.45rem 0.9rem", cursor: "pointer",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      color: "#dc2626",
+                      backgroundColor: "#fef2f2",
+                      border: "1px solid #fecaca",
+                      borderRadius: "8px",
+                      padding: "0.45rem 0.9rem",
+                      cursor: "pointer",
                       fontFamily: "'Inter', sans-serif",
-                      transition: "background-color 0.15s",
-                      whiteSpace: "nowrap", flexShrink: 0,
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
                     }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fee2e2"}
-                    onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fef2f2"}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#fee2e2")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#fef2f2")
+                    }
                   >
                     Cancel
                   </button>
