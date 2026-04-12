@@ -146,7 +146,7 @@ export default function HomePage() {
         <div className="flex gap-4 justify-center flex-wrap">
           <Link
             to="/register"
-            className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-7 py-3 rounded-md transition text-sm"
+            className="border border-white/30 text-white hover:bg-white/10 font-semibold px-7 py-3 rounded-md transition text-sm"
           >
             Create account
           </Link>
