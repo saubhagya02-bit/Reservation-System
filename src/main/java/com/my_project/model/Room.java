@@ -1,7 +1,10 @@
 package com.my_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,4 +23,7 @@ public class Room {
     private Double price;
     private String imagePath;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Reservation> reservations;
 }

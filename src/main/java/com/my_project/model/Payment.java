@@ -1,5 +1,6 @@
 package com.my_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "reservation_id", nullable = false)
+    @JsonIgnoreProperties({"payment", "user", "room"})
     private Reservation reservation;
 
     private Double amount;
@@ -21,16 +23,16 @@ public class Payment {
 
     public Payment(Reservation reservation, Double amount, String status) {
         this.reservation = reservation;
-        this.amount = amount;
-        this.status = status;
+        this.amount      = amount;
+        this.status      = status;
     }
 
-    public Integer getId() { return id; }
+    public Integer getId()           { return id; }
     public Reservation getReservation() { return reservation; }
-    public Double getAmount() { return amount; }
-    public String getStatus() { return status; }
+    public Double getAmount()        { return amount; }
+    public String getStatus()        { return status; }
 
     public void setReservation(Reservation reservation) { this.reservation = reservation; }
-    public void setAmount(Double amount) { this.amount = amount; }
-    public void setStatus(String status) { this.status = status; }
+    public void setAmount(Double amount)                { this.amount = amount; }
+    public void setStatus(String status)                { this.status = status; }
 }
