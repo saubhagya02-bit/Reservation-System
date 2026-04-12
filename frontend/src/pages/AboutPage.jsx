@@ -1,28 +1,56 @@
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-20 px-6">
-      <div className="max-w-2xl mx-auto text-center">
-        <h1
-          className="text-4xl font-bold text-gray-900 mb-4"
-          style={{ fontFamily: "'Playfair Display', serif" }}
-        >
+    <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "5rem 1.5rem", fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ maxWidth: "42rem", margin: "0 auto", textAlign: "center" }}>
+        <h1 style={{ fontSize: "2.5rem", fontWeight: 700, color: "#111827", marginBottom: "1rem" }}>
           About ReserveHub
         </h1>
-        <p className="text-gray-500 leading-relaxed text-base">
-          ReserveHub is a modern room reservation platform designed to make
-          booking fast, transparent, and stress-free. Whether you need a meeting
-          room, event space, or private suite — we've got you covered.
+        <p style={{ color: "#6b7280", lineHeight: 1.7, fontSize: "1rem", marginBottom: "3rem" }}>
+          ReserveHub is a modern room reservation platform designed to make booking
+          fast, transparent, and stress-free.
         </p>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          gap: "1.5rem",
+        }}>
           {[
             { stat: "500+", label: "Rooms available" },
             { stat: "10k+", label: "Happy guests" },
-            { stat: "99%", label: "Uptime guarantee" },
+            { stat: "99%",  label: "Uptime guarantee" },
           ].map(({ stat, label }) => (
-            <div key={label} className="bg-white border border-gray-200 rounded-xl p-6 text-center shadow-sm">
-              <p className="text-3xl font-bold text-brand-600" style={{ fontFamily: "'Playfair Display', serif" }}>{stat}</p>
-              <p className="text-gray-500 text-sm mt-1">{label}</p>
+            <div
+              key={label}
+              style={{
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "12px",
+                padding: "1.5rem",
+                textAlign: "center",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                cursor: "default",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = "translateY(-6px)";
+                e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.12)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
+              }}
+            >
+              <p style={{
+                fontSize: "2rem",
+                fontWeight: 700,
+                color: "#3b7df8",
+                marginBottom: "0.25rem",
+                fontFamily: "'Playfair Display', serif",
+              }}>
+                {stat}
+              </p>
+              <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>{label}</p>
             </div>
           ))}
         </div>
