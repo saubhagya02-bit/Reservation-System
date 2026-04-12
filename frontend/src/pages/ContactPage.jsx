@@ -447,7 +447,7 @@ export default function ContactPage() {
                       (e.currentTarget.style.backgroundColor = "#3b7df8")
                     }
                   >
-                    Send Message →
+                    Send Message
                   </button>
                 </form>
               </>
